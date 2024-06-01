@@ -1,6 +1,7 @@
 {
-  "singleQuote": true,
-  "bracketSpacing": true,
-  "printWidth": 120,
-  "plugins": ["prettier-plugin-organize-imports"]
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "printWidth": 120,
+    "tabWidth": 4,
+    "plugins": ["prettier-plugin-organize-imports"]
 }
