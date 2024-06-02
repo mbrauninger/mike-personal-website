@@ -134,7 +134,7 @@ export function Home() {
                             <TableBody>
                                 {LABELS.map((value, index) => {
                                     return (
-                                        <TableRow>
+                                        <TableRow key={index}>
                                             <TableCell>
                                                 <Box display="flex" alignItems="center">
                                                     <Typography
@@ -176,7 +176,7 @@ export function Home() {
                             <TableBody>
                                 {LABELS.map((value, index) => {
                                     return (
-                                        <TableRow>
+                                        <TableRow key={index}>
                                             <TableCell>
                                                 <Box display="flex" alignItems="center">
                                                     <Box display="flex" flexDirection={'column'}>

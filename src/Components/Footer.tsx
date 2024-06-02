@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 100,
+        gap: 80,
         marginTop: 'auto',
         [theme.breakpoints.down('md')]: {
             gap: 40,
@@ -18,56 +18,39 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
     },
     linkedin: {
-        height: 75,
-        width: 75,
         '&:hover': {
             filter: 'grayscale(100%) opacity(70%)',
         },
         cursor: 'pointer',
-        [theme.breakpoints.down('md')]: {
-            height: 50,
-            width: 50,
-            position: 'relative',
-            bottom: 15,
-        },
+        height: 50,
+        width: 50,
+        position: 'relative',
+        bottom: 15,
     },
     youtube: {
-        height: 100,
-        width: 100,
         '&:hover': {
             filter: 'grayscale(100%) opacity(70%)',
         },
         cursor: 'pointer',
-        [theme.breakpoints.down('md')]: {
-            height: 67,
-            width: 67,
-            position: 'relative',
-            bottom: 15,
-        },
+        height: 67,
+        width: 67,
+        position: 'relative',
+        bottom: 15,
     },
     github: {
-        height: 81,
-        width: 81,
         '&:hover': {
             filter: 'grayscale(100%) opacity(70%)',
         },
         cursor: 'pointer',
-        [theme.breakpoints.down('md')]: {
-            height: 60,
-            width: 60,
-            position: 'relative',
-            bottom: 15,
-        },
+        height: 60,
+        width: 60,
+        position: 'relative',
+        bottom: 15,
     },
     copyright: {
-        [theme.breakpoints.up('md')]: {
-            right: 200,
-        },
         color: 'white',
         position: 'absolute',
-        [theme.breakpoints.down('md')]: {
-            top: 85,
-        },
+        top: 85,
     },
 }));
 

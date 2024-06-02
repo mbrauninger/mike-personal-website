@@ -6,6 +6,8 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
+import { useNavigate } from 'react-router-dom';
+import { BLOG_PATH } from '../constants';
 
 // Define the type for the data array
 type BlogPost = {
@@ -22,20 +24,22 @@ const useStyles = makeStyles((theme) => ({
     image: {
         width: '150px', // Adjust the image size as needed
     },
+    tableRow: {
+        '&:hover': {
+            backgroundColor: '#CFD4CF',
+            cursor: 'pointer',
+        },
+    },
 }));
 
 export function Blog() {
     const classes = useStyles();
+    const navigate = useNavigate();
     const data: BlogPost = [
         {
             imageUrl: '/Chicago1.png',
-            title: 'My trip to Chicago... why am I still asleep?',
-            creationDate: 'October 15, 2023',
-        },
-        {
-            imageUrl: '/Chicago2.png',
-            title: 'My trip to Chicago... why am I still asleep?',
-            creationDate: 'October 15, 2023',
+            title: 'Blog posts to come soon!',
+            creationDate: 'June 1, 2024',
         },
     ];
     return (
@@ -46,7 +50,13 @@ export function Blog() {
             <Table className={classes.table}>
                 <TableBody>
                     {data.map((post, index) => (
-                        <TableRow key={index}>
+                        <TableRow
+                            key={index}
+                            className={classes.tableRow}
+                            onClick={() => {
+                                navigate(`/${BLOG_PATH}/post`);
+                            }}
+                        >
                             <TableCell>
                                 <Box display="flex" alignItems="center">
                                     <Box display="flex" alignItems="center" flexDirection={'column'}>
