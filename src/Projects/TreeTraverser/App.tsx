@@ -1,10 +1,10 @@
 import React from 'react';
-import Traverser from './Traverser';
+import TreeTraverser from './TreeTraverser';
 
 const App: React.FC = () => {
     return (
         <div>
-            <Traverser />
+            <TreeTraverser />
         </div>
     );
 };

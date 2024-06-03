@@ -1,4 +1,3 @@
-import '@fontsource/montserrat';
 import { TableContainer } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -13,13 +12,6 @@ interface ScrollableTableProps {
     data: Step[];
 }
 
-/**
- * The table that is shown on the right side of the screen. Shows the 30 most recent steps in the
- * traversal. A 'Step' is a node name that is mapped to the action that is occurring in a graph. The
- * action is a string, and uses shorthand notation to describe possible things that could be happening
- * in the traversal. For example, checking a neighbor is represented as 'neighbor' (check adjacent).
- * @returns The component.
- */
 const ScrollableTable: React.FC<ScrollableTableProps> = ({ data }) => {
     const tableRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +27,7 @@ const ScrollableTable: React.FC<ScrollableTableProps> = ({ data }) => {
             component={Paper}
             style={{
                 height: window.innerWidth <= 768 ? '70vh' : '80vh',
+                width: '225px',
                 overflowY: 'auto',
                 marginLeft: '10px',
                 position: 'relative',
@@ -45,23 +38,17 @@ const ScrollableTable: React.FC<ScrollableTableProps> = ({ data }) => {
             <Table stickyHeader>
                 <TableHead>
                     <TableRow>
-                        <TableCell sx={{ fontSize: 20, paddingLeft: 4.5 }}>State</TableCell>
-                        <TableCell sx={{ fontSize: 20, paddingRight: 4 }}>Node</TableCell>
+                        <TableCell sx={{ fontSize: 20 }}>State</TableCell>
+                        <TableCell sx={{ fontSize: 20 }}>Node</TableCell>
+                        {/* Add more table headers as needed */}
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {data.map((step, index) => (
                         <TableRow key={index}>
-                            <TableCell sx={{ fontSize: 20, fontFamily: 'montserrat' }}>{step.state}</TableCell>
-                            <TableCell
-                                sx={{
-                                    fontSize: 20,
-                                    paddingLeft: 4.3,
-                                    fontFamily: 'montserrat',
-                                }}
-                            >
-                                {step.value}
-                            </TableCell>
+                            <TableCell sx={{ fontSize: 20 }}>{step.state}</TableCell>
+                            <TableCell sx={{ fontSize: 20 }}>{step.value}</TableCell>
+                            {/* Add more table cells as needed */}
                         </TableRow>
                     ))}
                 </TableBody>

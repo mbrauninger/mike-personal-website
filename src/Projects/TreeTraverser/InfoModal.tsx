@@ -38,20 +38,13 @@ export function InfoModal(props: ModalProps) {
                         Overview
                     </Typography>
                     <Typography>
-                        This is a project that visualizes graph traversal algorithms. It features four algorithms:
+                        This is a project that visualizes binary tree traversals. It features four traversal algorithms:
                         <ul>
-                            <li>Dijkstra</li>
-                            <li>A* Search</li>
+                            <li>InOrder Traversal</li>
+                            <li>PreOrder Traversal</li>
+                            <li>PostOrder Traversal</li>
                             <li>Breadth-First Search</li>
-                            <li>Depth-First Search</li>
                         </ul>
-                        The graph is comprised of nodes (the bigger white circles), with a cost to get from one node to
-                        another through an edge (lines with a smaller circle in the middle). Nodes additionally contain
-                        heuristic values (the number inside each node), which are used only for A* Search. The
-                        heuristics in this project are admissible but not consistent (for those of you who are familiar
-                        with A* Search terminology).
-                        <br />
-                        <br />
                         <Typography variant="h4" fontWeight="bold">
                             Project Settings
                         </Typography>
@@ -62,27 +55,16 @@ export function InfoModal(props: ModalProps) {
                         your own time, you can do so by clicking the 'Step' button at the bottom of the screen.
                         <br />
                         <br />
-                        You can edit the starting node and the ending node in the settings window, and can optionally
-                        configure the application to traverse the entire graph instead of stopping at a goal node.
-                        <br />
-                        <br />
-                        Clicking the 'New Graph' button in the top-right corner of the visualizer will generate a new
-                        graph with randomized weights and heuristics, and will take your updated settings into account.
+                        Clicking the 'New Tree' button in the top-right corner of the visualizer will generate a new
+                        tree with a random structure, and will take your updated settings into account.
                         <br />
                         <br />
                         <Typography variant="h4" fontWeight="bold">
-                            Tables
+                            Table
                         </Typography>
-                        If you are on a computer, you will see two radio buttons at the bottom of the screen:
-                        <ul>
-                            <li>Path Table</li>
-                            <li>Steps Table</li>
-                        </ul>
-                        The path table contains path-related information about each node, such as the calculated lowest
-                        cost to get to that node, as well as the previous node that the traversal arrived to that node
-                        from. If A* Search is the selected algorithm, the table will also show the A* score. Once the
-                        traversal is finished, you can click on a node to view the calculated path to that node from the
-                        starting node. The steps table will list each step in the traversal, up to 30 steps at a time.
+                        If you are on a computer, you will see a table on the right-hand side of the screen. The table
+                        will list each step in the traversal, up to 30 steps at a time. You can reference it to get a
+                        better understanding of what's happening as the traversal is unfolding.
                     </Typography>
                 </Box>
             </Box>

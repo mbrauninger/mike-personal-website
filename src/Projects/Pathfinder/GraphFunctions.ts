@@ -1,6 +1,6 @@
-import { DISPLAY_WIDTH, DISPLAY_HEIGHT, ALPHABET } from "./Constants";
-import { dijkstra } from "./Traversals";
-import { Graph } from "./Types";
+import { ALPHABET, DISPLAY_HEIGHT, DISPLAY_WIDTH } from './Constants';
+import { dijkstra } from './Traversals';
+import { Graph } from './Types';
 
 /**
  * Generates a random integer between two values.
@@ -9,7 +9,7 @@ import { Graph } from "./Types";
  * @returns
  */
 function randomIntFromInterval(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 /**
@@ -27,97 +27,89 @@ function randomIntFromInterval(min: number, max: number) {
  * @param endNode
  * @returns
  */
-export function generateGraph(
-  size: number,
-  startingNode: string,
-  endNode: string,
-) {
-  function getX(i: number, evenRow: boolean) {
-    if (evenRow) {
-      if (i === 0) {
-        return DISPLAY_WIDTH / 12;
-      } else if (i === 1) {
-        return (3 * DISPLAY_WIDTH) / 12;
-      } else if (i === 2) {
-        return (5 * DISPLAY_WIDTH) / 12;
-      } else if (i === 3) {
-        return (7 * DISPLAY_WIDTH) / 12;
-      } else if (i === 4) {
-        return (9 * DISPLAY_WIDTH) / 12;
-      } else {
-        return (11 * DISPLAY_WIDTH) / 12;
-      }
-    } else {
-      if (i === 0) {
-        return DISPLAY_WIDTH / 6;
-      } else if (i === 1) {
-        return DISPLAY_WIDTH / 3;
-      } else if (i === 2) {
-        return DISPLAY_WIDTH / 2;
-      } else if (i === 3) {
-        return (2 * DISPLAY_WIDTH) / 3;
-      } else {
-        return (5 * DISPLAY_WIDTH) / 6;
-      }
+export function generateGraph(size: number, startingNode: string, endNode: string) {
+    function getX(i: number, evenRow: boolean) {
+        if (evenRow) {
+            if (i === 0) {
+                return DISPLAY_WIDTH / 12;
+            } else if (i === 1) {
+                return (3 * DISPLAY_WIDTH) / 12;
+            } else if (i === 2) {
+                return (5 * DISPLAY_WIDTH) / 12;
+            } else if (i === 3) {
+                return (7 * DISPLAY_WIDTH) / 12;
+            } else if (i === 4) {
+                return (9 * DISPLAY_WIDTH) / 12;
+            } else {
+                return (11 * DISPLAY_WIDTH) / 12;
+            }
+        } else {
+            if (i === 0) {
+                return DISPLAY_WIDTH / 6;
+            } else if (i === 1) {
+                return DISPLAY_WIDTH / 3;
+            } else if (i === 2) {
+                return DISPLAY_WIDTH / 2;
+            } else if (i === 3) {
+                return (2 * DISPLAY_WIDTH) / 3;
+            } else {
+                return (5 * DISPLAY_WIDTH) / 6;
+            }
+        }
     }
-  }
-  let index = 0;
-  const graph: Graph = {};
-  let evenRow = false;
-  let y = DISPLAY_HEIGHT / (window.innerWidth <= 768 ? 8 : 9);
-  while (index < size) {
-    let i = 0;
-    if (!evenRow) {
-      while (i < 5 && index < size) {
-        graph[ALPHABET[index]] = {
-          neighbors: [],
-          attributes: {
-            state: "clean",
-            heuristic: 0,
-            x: getX(i, evenRow),
-            y: y,
-          },
-        };
-        i++;
-        index++;
-      }
-    } else {
-      while (i < 6 && index < size) {
-        graph[ALPHABET[index]] = {
-          neighbors: [],
-          attributes: {
-            state: "clean",
-            heuristic: 0,
-            x: getX(i, evenRow),
-            y: y,
-          },
-        };
-        i++;
-        index++;
-      }
+    let index = 0;
+    const graph: Graph = {};
+    let evenRow = false;
+    let y = DISPLAY_HEIGHT / (window.innerWidth <= 768 ? 8 : 9);
+    while (index < size) {
+        let i = 0;
+        if (!evenRow) {
+            while (i < 5 && index < size) {
+                graph[ALPHABET[index]] = {
+                    neighbors: [],
+                    attributes: {
+                        state: 'clean',
+                        heuristic: 0,
+                        x: getX(i, evenRow),
+                        y: y,
+                    },
+                };
+                i++;
+                index++;
+            }
+        } else {
+            while (i < 6 && index < size) {
+                graph[ALPHABET[index]] = {
+                    neighbors: [],
+                    attributes: {
+                        state: 'clean',
+                        heuristic: 0,
+                        x: getX(i, evenRow),
+                        y: y,
+                    },
+                };
+                i++;
+                index++;
+            }
+        }
+        evenRow = !evenRow;
+        y += (2 * DISPLAY_HEIGHT) / (window.innerWidth <= 768 ? 14 : 15);
     }
-    evenRow = !evenRow;
-    y += (2 * DISPLAY_HEIGHT) / (window.innerWidth <= 768 ? 14 : 15);
-  }
 
-  for (let i = 0; i < size; i++) {
-    graph[ALPHABET[i]].neighbors = getNeighbors(i, graph);
-  }
-
-  for (const node of Object.keys(graph)) {
-    const distances = dijkstra(graph, node, endNode).distances;
-    const optimalPathLength = distances[distances.length - 1][endNode];
-    if (node !== startingNode && node !== endNode) {
-      graph[node].attributes.heuristic = generateHeuristic(
-        graph,
-        node,
-        optimalPathLength,
-      );
-    } else {
-      graph[node].attributes.heuristic = 0;
+    for (let i = 0; i < size; i++) {
+        graph[ALPHABET[i]].neighbors = getNeighbors(i, graph);
     }
-  }
-  return graph;
+
+    for (const node of Object.keys(graph)) {
+        const distances = dijkstra(graph, node, endNode).distances;
+        const optimalPathLength = distances[distances.length - 1][endNode];
+        if (node !== startingNode && node !== endNode) {
+            graph[node].attributes.heuristic = generateHeuristic(graph, node, optimalPathLength);
+        } else {
+            graph[node].attributes.heuristic = 0;
+        }
+    }
+    return graph;
 }
 
 /**
@@ -127,23 +119,16 @@ export function generateGraph(
  * Consistent means that the cost of the heuristic plus the weight to get to a neighbor is less
  * than or equal to the neighbor's heuristic.
  */
-function generateHeuristic(
-  graph: Graph,
-  nodeName: string,
-  optimalPathLength: number,
-) {
-  const node = graph[nodeName];
-  let lowestCostToNeighbor = Infinity;
-  for (const neighbor of node.neighbors) {
-    lowestCostToNeighbor =
-      neighbor.weight < lowestCostToNeighbor
-        ? neighbor.weight
-        : lowestCostToNeighbor;
-  }
-  // Another possible heuristic
-  // const maximumAllowedValue = Math.min(lowestCostToNeighbor, optimalPathLength);
-  // return randomIntFromInterval(1, maximumAllowedValue);
-  return randomIntFromInterval(1, optimalPathLength);
+function generateHeuristic(graph: Graph, nodeName: string, optimalPathLength: number) {
+    const node = graph[nodeName];
+    let lowestCostToNeighbor = Infinity;
+    for (const neighbor of node.neighbors) {
+        lowestCostToNeighbor = neighbor.weight < lowestCostToNeighbor ? neighbor.weight : lowestCostToNeighbor;
+    }
+    // Another possible heuristic
+    // const maximumAllowedValue = Math.min(lowestCostToNeighbor, optimalPathLength);
+    // return randomIntFromInterval(1, maximumAllowedValue);
+    return randomIntFromInterval(1, optimalPathLength);
 }
 
 /**
@@ -154,29 +139,23 @@ function generateHeuristic(
  * @param graph - The graph.
  * @returns The weight of the neighbor if it exists, otherwise 0.
  */
-function getNeighborWeightIfExists(
-  index: number,
-  offset: number,
-  graph: Graph,
-): number {
-  const currentNode = ALPHABET[index];
-  const neighbors = new Set(
-    graph[ALPHABET[index + offset]].neighbors.map(
-      (neighbor) => neighbor.nodeName,
-    ),
-  ).has(currentNode)
-    ? graph[ALPHABET[index + offset]].neighbors
-    : [];
-  let output = 0;
-  if (neighbors.length) {
-    for (const neighbor of neighbors) {
-      if (neighbor.nodeName === currentNode) {
-        output = neighbor.weight;
-        break;
-      }
+function getNeighborWeightIfExists(index: number, offset: number, graph: Graph): number {
+    const currentNode = ALPHABET[index];
+    const neighbors = new Set(graph[ALPHABET[index + offset]].neighbors.map((neighbor) => neighbor.nodeName)).has(
+        currentNode,
+    )
+        ? graph[ALPHABET[index + offset]].neighbors
+        : [];
+    let output = 0;
+    if (neighbors.length) {
+        for (const neighbor of neighbors) {
+            if (neighbor.nodeName === currentNode) {
+                output = neighbor.weight;
+                break;
+            }
+        }
     }
-  }
-  return output;
+    return output;
 }
 
 /**
@@ -187,266 +166,264 @@ function getNeighborWeightIfExists(
  * @returns
  */
 function getNeighbors(index: number, graph: Graph) {
-  const middleNodes = new Set<number>([
-    6, 7, 8, 9, 12, 13, 14, 17, 18, 19, 20, 23, 24, 25, 28, 29, 30, 31,
-  ]);
-  const leftNodes = new Set<number>([5, 16, 27]);
-  const rightNodes = new Set<number>([10, 21, 32]);
-  const topMiddleNodes = new Set<number>([1, 2, 3]);
-  const bottomMiddleNodes = new Set<number>([34, 35, 36]);
-  const topLeftNodes = new Set<number>([0]);
-  const bottomLeftNodes = new Set<number>([33]);
-  const topRightNodes = new Set<number>([4]);
-  const bottomRightNodes = new Set<number>([37]);
-  const middleLeftNodes = new Set<number>([11, 22]);
-  const middleRightNodes = new Set<number>([15, 26]);
+    const middleNodes = new Set<number>([6, 7, 8, 9, 12, 13, 14, 17, 18, 19, 20, 23, 24, 25, 28, 29, 30, 31]);
+    const leftNodes = new Set<number>([5, 16, 27]);
+    const rightNodes = new Set<number>([10, 21, 32]);
+    const topMiddleNodes = new Set<number>([1, 2, 3]);
+    const bottomMiddleNodes = new Set<number>([34, 35, 36]);
+    const topLeftNodes = new Set<number>([0]);
+    const bottomLeftNodes = new Set<number>([33]);
+    const topRightNodes = new Set<number>([4]);
+    const bottomRightNodes = new Set<number>([37]);
+    const middleLeftNodes = new Set<number>([11, 22]);
+    const middleRightNodes = new Set<number>([15, 26]);
 
-  if (middleNodes.has(index)) {
-    const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
-    const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
-    const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
-    const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
-    const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
-    const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 6],
-        weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 5],
-        weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 1],
-        weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 1],
-        weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 5],
-        weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 6],
-        weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (leftNodes.has(index)) {
-    const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
-    const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
-    const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 5],
-        weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 1],
-        weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 6],
-        weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (rightNodes.has(index)) {
-    const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
-    const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
-    const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 6],
-        weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 1],
-        weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 5],
-        weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (topMiddleNodes.has(index)) {
-    const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
-    const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
-    const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
-    const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 1],
-        weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 1],
-        weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 5],
-        weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 6],
-        weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (bottomMiddleNodes.has(index)) {
-    const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
-    const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
-    const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
-    const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 6],
-        weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 5],
-        weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 1],
-        weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 1],
-        weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (topLeftNodes.has(index)) {
-    const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
-    const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
-    const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
-    return [
-      {
-        nodeName: ALPHABET[index + 1],
-        weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 5],
-        weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 6],
-        weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (bottomLeftNodes.has(index)) {
-    const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
-    const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
-    const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 6],
-        weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 5],
-        weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 1],
-        weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (topRightNodes.has(index)) {
-    const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
-    const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
-    const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 1],
-        weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 5],
-        weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 6],
-        weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (bottomRightNodes.has(index)) {
-    const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
-    const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
-    const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 6],
-        weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 5],
-        weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 1],
-        weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (middleLeftNodes.has(index)) {
-    const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
-    const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
-    const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
-    const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
-    const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 6],
-        weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 5],
-        weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 1],
-        weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 5],
-        weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 6],
-        weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else if (middleRightNodes.has(index)) {
-    const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
-    const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
-    const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
-    const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
-    const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
-    return [
-      {
-        nodeName: ALPHABET[index - 6],
-        weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 5],
-        weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index - 1],
-        weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 5],
-        weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
-      },
-      {
-        nodeName: ALPHABET[index + 6],
-        weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
-      },
-    ];
-  } else {
-    return [];
-  }
+    if (middleNodes.has(index)) {
+        const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
+        const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
+        const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
+        const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
+        const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
+        const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 6],
+                weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 5],
+                weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 1],
+                weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 1],
+                weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 5],
+                weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 6],
+                weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (leftNodes.has(index)) {
+        const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
+        const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
+        const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 5],
+                weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 1],
+                weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 6],
+                weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (rightNodes.has(index)) {
+        const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
+        const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
+        const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 6],
+                weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 1],
+                weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 5],
+                weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (topMiddleNodes.has(index)) {
+        const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
+        const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
+        const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
+        const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 1],
+                weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 1],
+                weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 5],
+                weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 6],
+                weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (bottomMiddleNodes.has(index)) {
+        const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
+        const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
+        const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
+        const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 6],
+                weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 5],
+                weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 1],
+                weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 1],
+                weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (topLeftNodes.has(index)) {
+        const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
+        const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
+        const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
+        return [
+            {
+                nodeName: ALPHABET[index + 1],
+                weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 5],
+                weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 6],
+                weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (bottomLeftNodes.has(index)) {
+        const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
+        const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
+        const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 6],
+                weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 5],
+                weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 1],
+                weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (topRightNodes.has(index)) {
+        const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
+        const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
+        const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 1],
+                weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 5],
+                weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 6],
+                weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (bottomRightNodes.has(index)) {
+        const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
+        const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
+        const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 6],
+                weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 5],
+                weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 1],
+                weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (middleLeftNodes.has(index)) {
+        const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
+        const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
+        const plus1Weight = getNeighborWeightIfExists(index, 1, graph);
+        const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
+        const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 6],
+                weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 5],
+                weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 1],
+                weight: plus1Weight ? plus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 5],
+                weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 6],
+                weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else if (middleRightNodes.has(index)) {
+        const minus6Weight = getNeighborWeightIfExists(index, -6, graph);
+        const minus5Weight = getNeighborWeightIfExists(index, -5, graph);
+        const minus1Weight = getNeighborWeightIfExists(index, -1, graph);
+        const plus5Weight = getNeighborWeightIfExists(index, 5, graph);
+        const plus6Weight = getNeighborWeightIfExists(index, 6, graph);
+        return [
+            {
+                nodeName: ALPHABET[index - 6],
+                weight: minus6Weight ? minus6Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 5],
+                weight: minus5Weight ? minus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index - 1],
+                weight: minus1Weight ? minus1Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 5],
+                weight: plus5Weight ? plus5Weight : randomIntFromInterval(1, 9),
+            },
+            {
+                nodeName: ALPHABET[index + 6],
+                weight: plus6Weight ? plus6Weight : randomIntFromInterval(1, 9),
+            },
+        ];
+    } else {
+        return [];
+    }
 }
 
 /**
@@ -455,21 +432,17 @@ function getNeighbors(index: number, graph: Graph) {
  * @param targetNodeName - The name of the node to update.
  * @param state - The state of the node.
  */
-export const updateGraphByValue = (
-  graph: Graph,
-  targetNodeName: string,
-  state: string,
-) => {
-  graph[targetNodeName].attributes.state = state;
-  for (const nodeName in graph) {
-    if (
-      graph[nodeName].attributes.state !== "processed" &&
-      graph[nodeName].attributes.state !== "new node" &&
-      nodeName !== targetNodeName
-    ) {
-      graph[nodeName].attributes.state = "clean";
+export const updateGraphByValue = (graph: Graph, targetNodeName: string, state: string) => {
+    graph[targetNodeName].attributes.state = state;
+    for (const nodeName in graph) {
+        if (
+            graph[nodeName].attributes.state !== 'processed' &&
+            graph[nodeName].attributes.state !== 'new node' &&
+            nodeName !== targetNodeName
+        ) {
+            graph[nodeName].attributes.state = 'clean';
+        }
     }
-  }
 };
 
 /**
@@ -485,12 +458,11 @@ export const updateGraphByValue = (
  * @returns A copy of the original graph and the updated graph.
  */
 export function drawPath(graph: Graph, path: string[], finished: boolean) {
-  if (!finished) return;
+    if (!finished) return;
 
-  const copy = { ...graph };
-  path.forEach((nodeName, index) => {
-    graph[nodeName].attributes.state =
-      index === path.length - 1 ? "path" : `path-${path[index + 1]}`;
-  });
-  return { originalGraph: copy, newGraph: graph };
+    const copy = { ...graph };
+    path.forEach((nodeName, index) => {
+        graph[nodeName].attributes.state = index === path.length - 1 ? 'path' : `path-${path[index + 1]}`;
+    });
+    return { originalGraph: copy, newGraph: graph };
 }
