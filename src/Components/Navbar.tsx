@@ -33,7 +33,7 @@ export function Navbar() {
     const classes = useStyles();
     const navigate = useNavigate();
 
-    const [drawerOpen, setDrawerOpen] = useState(true);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setDrawerOpen(newOpen);
