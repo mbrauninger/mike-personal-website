@@ -9,9 +9,9 @@ import {
 import { drawPath } from './GraphFunctions';
 import { Graph, Node } from './Types';
 
-const NEIGHBOR_BEING_CHECKED_COLOR = '#AFEEEE';
-const CHECKING_NEIGHBORS_COLOR = '#E6E6FA';
-const VISITED_COLOR = '#FFA07A';
+const NEIGHBOR_BEING_CHECKED_COLOR = '#FFA07A';
+const CHECKING_NEIGHBORS_COLOR = '#CECEF0';
+const VISITED_COLOR = '#AFEEEE';
 const GOAL_COLOR = '#90EE90';
 
 /**
